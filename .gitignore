@@ -1,0 +1,8 @@
+/db/mysql/data
+/db/mysql/dump
+/db/redis
+/www
+.env
+/.idea/
+nginx/logs/
+nginx/conf.d/

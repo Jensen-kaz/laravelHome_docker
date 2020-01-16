@@ -1,0 +1,79 @@
+version: '2.0'
+
+services:
+    nginx:
+        image: nginx
+        volumes:
+            - ./src:/var/www/html
+            - ./nginx/conf.d:/etc/nginx/conf.d
+            - ./www:/var/www/
+            - ./nginx/logs:/var/log/nginx/
+        container_name: laravelhome_nginx
+        ports:
+            - "127.0.0.1:8080:80"
+            - "127.0.0.1:8443:443"
+        links:
+            - php
+        depends_on:
+            - php
+        networks:
+            - laravelhome
+
+    php:
+        build:
+            context: ./php
+            args:
+                userid: $USERID
+                username: "${USER_NAME}"
+                dev_mode: "${DEV_MODE}"
+        container_name: laravelhome_php
+        expose:
+            - "9000"
+        volumes:
+            - ./www:/var/www
+            - ./db/mysql/dump:/backup/dump
+        links:
+            - mysql
+            - redis
+        environment:
+            PHP_IDE_CONFIG: "serverName=Docker"
+        networks:
+            - laravelhome
+
+    mysql:
+        image: mysql:5.7
+        restart: always
+        container_name: laravelhome_mysql
+        volumes:
+              - ./db/mysql/dump:/docker-entrypoint-initdb.d
+              - ./db/mysql/data:/var/lib/mysql
+              - ./db/mysql/conf:/etc/mysql
+        command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+        environment:
+              MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSW}
+              MYSQL_DATABASE: laravelhome
+              MYSQL_USER: ${MYSQL_USER}
+              MYSQL_PASSWORD: ${MYSQL_PASSW}
+        ports:
+            - "127.0.0.1:${MYSQL_PORT}:3306"
+        networks:
+            - laravelhome
+
+    redis:
+        image: redis
+        container_name: laravelhome_redis
+        volumes:
+            - ./db/redis:/data
+        restart: always
+        expose:
+            - "6379"
+        networks:
+            - laravelhome
+
+networks:
+    laravelhome:
+        driver: bridge
+        ipam:
+            driver: default
+            config:
+                - subnet: 192.168.220.0/28
