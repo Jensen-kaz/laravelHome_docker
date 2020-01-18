@@ -52,3 +52,5 @@ RUN usermod -a -G www-data $username
 EXPOSE 9000
 
 WORKDIR /var/www/
+
+CMD ["php-fpm"]
