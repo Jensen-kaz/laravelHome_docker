@@ -20,15 +20,8 @@ services:
             - laravelhome
 
     php:
-        build:
-            context: ./php
-            args:
-                userid: $USERID
-                username: "${USER_NAME}"
-                dev_mode: "${DEV_MODE}"
+        image: antonjobdocker/laravelhome_php:v1
         container_name: laravelhome_php
-        expose:
-            - "9000"
         volumes:
             - ./www:/var/www
             - ./db/mysql/dump:/backup/dump
@@ -70,6 +63,18 @@ services:
         networks:
             - laravelhome
 
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        container_name: laravelhome_phpmyadmin
+        environment:
+            - PMA_HOST=mysql
+        restart: always
+        links:
+          - mysql
+        ports:
+            - 8081:80
+        networks:
+            - laravelhome
 networks:
     laravelhome:
         driver: bridge

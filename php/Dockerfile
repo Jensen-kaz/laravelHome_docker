@@ -1,6 +1,6 @@
 FROM php:7.1-fpm
 
-ARG dev_mode
+ARG dev_mode=true
 
 RUN if [ "$dev_mode" = true ]; then echo "\033[34mDev mode\033[m"; else echo "\033[32mProduction mode\033[m"; fi
 
@@ -43,8 +43,8 @@ RUN docker-php-ext-install \
     sockets
 
 
-ARG userid
-ARG username
+ARG userid=1000
+ARG username=laravelhome
 
 RUN useradd --no-log-init --no-create-home --user-group --shell /bin/bash -u $userid  $username
 RUN usermod -a -G www-data $username

@@ -15,6 +15,19 @@
     DB_USERNAME=root
     DB_PASSWORD=
     
+### Настройки env docker
+  MYSQL_ROOT_PASSW=root
+  MYSQL_USER=root
+  MYSQL_PASSW=
+  MYSQL_PORT=3050
+  
+ 
+  USER=
+  USER_NAME=laravelhome
+  USERID=1000
+  
+  DEV_MODE=true
+    
 ### Настройки nginx 
 
 nginx/conf.d/app.conf:
